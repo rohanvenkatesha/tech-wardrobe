@@ -17,14 +17,6 @@ const PdfUploader: React.FC<PdfUploaderProps> = ({ onFilesChange }) => {
     onFilesChange(files.map(f => f.file));
   }, [files, onFilesChange]);
 
-  const onDragEnd = (result: DropResult) => {
-    if (!result.destination) return;
-    const newFiles = Array.from(files);
-    const [removed] = newFiles.splice(result.source.index, 1);
-    newFiles.splice(result.destination.index, 0, removed);
-    setFiles(newFiles);
-  };
-
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     const newFiles = Array.from(e.target.files).map((file, i) => ({
@@ -34,17 +26,38 @@ const PdfUploader: React.FC<PdfUploaderProps> = ({ onFilesChange }) => {
     setFiles(prev => [...prev, ...newFiles]);
   };
 
+  const onDragEnd = (result: DropResult) => {
+    if (!result.destination) return;
+    const newFiles = Array.from(files);
+    const [moved] = newFiles.splice(result.source.index, 1);
+    newFiles.splice(result.destination.index, 0, moved);
+    setFiles(newFiles);
+  };
+
   const removeFile = (id: string) => {
     setFiles(prev => prev.filter(f => f.id !== id));
   };
 
   return (
-    <div>
+    <div style={{ maxWidth: 400, margin: 'auto' }}>
       <input type="file" multiple accept="application/pdf" onChange={onFileChange} />
+
       <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="pdf-list">
+        <Droppable droppableId="droppable-pdf-list">
           {(provided) => (
-            <ul {...provided.droppableProps} ref={provided.innerRef} style={{ padding: 0, listStyle: 'none', maxHeight: 300, overflowY: 'auto' }}>
+            <ul
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+              style={{
+                padding: 0,
+                marginTop: 16,
+                listStyle: 'none',
+                maxHeight: 300,
+                overflowY: 'auto',
+                border: '1px solid #ccc',
+                borderRadius: 4,
+              }}
+            >
               {files.map((file, index) => (
                 <Draggable key={file.id} draggableId={file.id} index={index}>
                   {(provided, snapshot) => (
@@ -54,13 +67,14 @@ const PdfUploader: React.FC<PdfUploaderProps> = ({ onFilesChange }) => {
                       {...provided.dragHandleProps}
                       style={{
                         userSelect: 'none',
-                        padding: 10,
+                        padding: 12,
                         marginBottom: 8,
-                        background: snapshot.isDragging ? '#bbdefb' : '#f0f0f0',
+                        backgroundColor: snapshot.isDragging ? '#90caf9' : '#e3f2fd',
                         borderRadius: 4,
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'center',
+                        cursor: 'grab',
                         ...provided.draggableProps.style,
                       }}
                     >
@@ -70,10 +84,10 @@ const PdfUploader: React.FC<PdfUploaderProps> = ({ onFilesChange }) => {
                         style={{
                           background: 'transparent',
                           border: 'none',
-                          cursor: 'pointer',
-                          color: '#e53e3e',
+                          color: 'red',
                           fontWeight: 'bold',
-                          fontSize: 16,
+                          fontSize: 18,
+                          cursor: 'pointer',
                         }}
                         aria-label={`Remove ${file.file.name}`}
                       >

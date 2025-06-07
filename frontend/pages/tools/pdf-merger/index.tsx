@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import PdfUploader from './PdfUploader'; // Adjust path as per your folder structure
+import Link from 'next/link';
+import PdfUploader from './PdfUploader'; // Adjust if needed
 
 const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
 
@@ -38,8 +39,15 @@ const PdfMerger: React.FC = () => {
 
   return (
     <div className="max-w-xl mx-auto p-6 bg-white rounded shadow-md">
+      <Link href="/" passHref>
+        <button className="mb-4 px-4 py-2 bg-gray-200 text-black rounded hover:bg-gray-300">
+          ← Back to Home
+        </button>
+      </Link>
+
       <h2 className="text-2xl font-bold mb-4">PDF Merger</h2>
       <PdfUploader onFilesChange={setFiles} />
+
       <button
         onClick={handleMerge}
         disabled={loading || files.length < 2}

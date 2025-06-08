@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import PdfUploader from './PdfUploader'; // Adjust if needed
 
-const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
+const apiBaseUrl = process.env.NEXT_PUBLIC_PDF_MERGER_API_URL || 'http://localhost:8000';
 
 const PdfMerger: React.FC = () => {
   const [files, setFiles] = useState<File[]>([]);
